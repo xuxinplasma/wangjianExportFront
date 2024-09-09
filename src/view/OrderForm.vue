@@ -1,37 +1,64 @@
 <template>
-  <div id="order-form">
-    <el-form ref="orderForm" :model="orderForm" :rules="rules" label-width="100px">
-      <el-form-item label="Customer Name" prop="customerName">
-        <el-input v-model="orderForm.customerName" placeholder="Enter your name"></el-input>
-      </el-form-item>
-      
-      <el-form-item label="Product" prop="product">
-        <el-select v-model="orderForm.product" placeholder="Select a product">
-          <el-option label="Product A" value="productA"></el-option>
-          <el-option label="Product B" value="productB"></el-option>
-          <el-option label="Product C" value="productC"></el-option>
-        </el-select>
-      </el-form-item>
-      
-      <el-form-item label="Quantity" prop="quantity">
-        <el-input-number v-model="orderForm.quantity" :min="1"></el-input-number>
-      </el-form-item>
-      
-      <el-form-item label="Address" prop="address">
-        <el-input v-model="orderForm.address" type="textarea" placeholder="Enter your address"></el-input>
-      </el-form-item>
-      
-      <el-form-item>
-        <el-button type="primary" @click="submitOrder('orderForm')">Submit Orders</el-button>
-        <el-button @click="resetOrder('orderForm')">Reset</el-button>
-      </el-form-item>
-    </el-form>
-    <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="date" label="Date" width="180"></el-table-column>
-      <el-table-column prop="name" label="Name" width="180"></el-table-column>
-      <el-table-column prop="address" label="Address"></el-table-column>
-    </el-table>
-  </div>
+  <el-container style="height: 100vh;">
+        <!-- Header -->
+    <el-header style="background-color: #409EFF; color: white; text-align: center;">
+      <h2>Export Application</h2>
+    </el-header>
+     <el-container>
+      <!-- Left Side Menu -->
+      <el-aside width="200px" style="background-color: #f2f2f2;">
+        <el-menu default-active="1">
+          <el-menu-item index="1">Home</el-menu-item>
+          <el-menu-item index="2">About</el-menu-item>
+          <el-menu-item index="3">Contact</el-menu-item>
+        </el-menu>
+      </el-aside>
+       <el-main>
+        <!-- Form Section -->
+        <el-form ref="orderForm" :model="orderForm" label-width="100px" style="margin-bottom: 20px;">
+          <el-form-item label="Name" prop="customerName">
+            <el-input v-model="orderForm.name" placeholder="Enter your name"></el-input>
+          </el-form-item>
+          <el-form-item label="Email" prop="email">
+            <el-input v-model="orderForm.email"></el-input>
+          </el-form-item>
+           <el-form-item label="Product" prop="product">
+            <el-select v-model="orderForm.product" placeholder="Select a product">
+              <el-option label="Product A" value="productA"></el-option>
+              <el-option label="Product B" value="productB"></el-option>
+              <el-option label="Product C" value="productC"></el-option>
+            </el-select>
+          </el-form-item>
+         <el-form-item label="Quantity" prop="quantity">
+            <el-input-number v-model="orderForm.quantity" :min="1"></el-input-number>
+          </el-form-item>
+          
+          <el-form-item label="Address" prop="address">
+            <el-input v-model="orderForm.address" type="textarea" placeholder="Enter your address"></el-input>
+          </el-form-item>
+          
+          <el-form-item>
+            <el-button type="primary" @click="submitOrder('orderForm')">Submit Orders</el-button>
+            <el-button @click="resetOrder('orderForm')">Reset</el-button>
+          </el-form-item>
+        </el-form>
+
+        <!-- Table Section -->
+        <el-table :data="tableData" style="width: 100%;">
+          <el-table-column prop="name" label="Name" width="180"></el-table-column>
+          <el-table-column prop="email" label="Email"></el-table-column>
+          <el-table-column prop="date" label="Date" width="180"></el-table-column>
+        </el-table>
+      </el-main>
+      <!-- Body Content -->
+
+    </el-container>
+
+    <!-- Footer -->
+    <el-footer style="background-color: #f2f2f2; text-align: center;">
+      &copy; 2024 My Application
+    </el-footer>
+  </el-container>
   
 </template>
 
@@ -43,28 +70,18 @@ export default {
   data() {
     return {
       orderForm: {
-        customerName: '',
+        name: '',
+        email: '',
         product: '',
         quantity: 1,
         address: '',
       },
       tableData: [
-        {
-          date: '2024-09-07',
-          name: 'John Doe',
-          address: '123 Main St.'
-        },
-        {
-          date: '2024-09-08',
-          name: 'Jane Doe',
-          address: '456 Elm St.'
-        },
-        {
-          date: '2024-09-09',
-          name: 'Sam Smith',
-          address: '789 Oak St.'
-        }
-      ],
+        { name: 'John Doe', email: 'john@example.com', date: '2024-09-09' },
+        { name: 'Jane Roe', email: 'jane@example.com', date: '2024-09-08' },
+        { name: 'Richard Roe', email: 'richard@example.com', date: '2024-09-07' }
+      ]
+      ,
       rules: {
         customerName: [
           { required: true, message: 'Please input the customer name', trigger: 'blur' }
@@ -119,12 +136,36 @@ export default {
 </script>
 
 <style scoped>
-#order-form {
-  width: 400px;
-  margin: 50px auto;
+/* Style for the layout */
+.el-header {
+  height: 60px;
+  line-height: 60px;
 }
 
-.el-form-item {
-  margin-bottom: 20px;
+.el-aside {
+  padding: 20px;
+}
+
+.el-footer {
+  height: 40px;
+  line-height: 40px;
+}
+
+.el-main {
+  padding: 20px;
+}
+
+h2 {
+  margin: 0;
+}
+
+/* Style for form and table */
+.el-form {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.el-table {
+  margin-top: 20px;
 }
 </style>
