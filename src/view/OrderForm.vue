@@ -9,31 +9,51 @@
       <el-aside width="200px" style="background-color: #f2f2f2;">
         <el-menu default-active="1">
           <el-menu-item index="1">Home</el-menu-item>
-          <el-menu-item index="2">About</el-menu-item>
-          <el-menu-item index="3">Contact</el-menu-item>
+          <el-menu-item index="2">ProformaInvoice</el-menu-item>
+          <el-menu-item index="3">PurchaseOrder</el-menu-item>
         </el-menu>
       </el-aside>
        <el-main>
         <!-- Form Section -->
-        <el-form ref="orderForm" :model="orderForm" label-width="100px" style="margin-bottom: 20px;">
-          <el-form-item label="Name" prop="customerName">
-            <el-input v-model="orderForm.name" placeholder="Enter your name"></el-input>
+        <el-form ref="orderForm" :model="orderForm" label-width="200px" style="margin-bottom: 20px;">
+          <el-form-item label="ProformaInvoiceNum" prop="proformaInvoiceNum">
+            <el-input v-model="orderForm.proformaInvoiceNum" placeholder="Enter your ProformaInvoiceNum" style="text-align: left;"></el-input>
           </el-form-item>
-          <el-form-item label="Email" prop="email">
-            <el-input v-model="orderForm.email"></el-input>
-          </el-form-item>
-           <el-form-item label="Product" prop="product">
-            <el-select v-model="orderForm.product" placeholder="Select a product">
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="StartDate" prop="startDate" style="text-align: left;">
+                <el-date-picker 
+                v-model="orderForm.startDate" 
+                type="date" 
+                placeholder="Select Start Date" 
+                style="width: 100%;">
+              </el-date-picker>
+              </el-form-item>
+            </el-col>
+            
+            <el-col :span="12">
+              <el-form-item label="EndDate" prop="endDate" style="text-align: left;">
+                <el-date-picker 
+                v-model="orderForm.startDate" 
+                type="date" 
+                placeholder="Select Start Date" 
+                style="width: 100%;">
+              </el-date-picker>
+              </el-form-item>
+            </el-col>
+        </el-row>
+           <el-form-item label="Product" prop="product" style="text-align: left;">
+            <el-select v-model="orderForm.product" placeholder="Select a product" >
               <el-option label="Product A" value="productA"></el-option>
               <el-option label="Product B" value="productB"></el-option>
               <el-option label="Product C" value="productC"></el-option>
             </el-select>
           </el-form-item>
-         <el-form-item label="Quantity" prop="quantity">
+         <el-form-item label="Quantity" prop="quantity" style="text-align: left;">
             <el-input-number v-model="orderForm.quantity" :min="1"></el-input-number>
           </el-form-item>
           
-          <el-form-item label="Address" prop="address">
+          <el-form-item label="Address" prop="address" style="text-align: left;">
             <el-input v-model="orderForm.address" type="textarea" placeholder="Enter your address"></el-input>
           </el-form-item>
           
@@ -45,8 +65,11 @@
 
         <!-- Table Section -->
         <el-table :data="tableData" style="width: 100%;">
-          <el-table-column prop="name" label="Name" width="180"></el-table-column>
-          <el-table-column prop="email" label="Email"></el-table-column>
+          <el-table-column prop="proformaInvoiceNum" label="proformaInvoiceNum" width="100"></el-table-column>
+          <el-table-column prop="shippingMethod" label="shippingMethod"></el-table-column>
+          <el-table-column prop="paymentMethod" label="paymentMethod"></el-table-column>
+          <el-table-column prop="importMerchant" label="importMerchant"></el-table-column>
+          <el-table-column prop="broker" label="出口代理商"></el-table-column>
           <el-table-column prop="date" label="Date" width="180"></el-table-column>
         </el-table>
       </el-main>
@@ -70,21 +93,28 @@ export default {
   data() {
     return {
       orderForm: {
-        name: '',
-        email: '',
+        proformaInvoiceNum: '',
+        startDate: '',
+        endDate: '',
         product: '',
         quantity: 1,
         address: '',
       },
       tableData: [
-        { name: 'John Doe', email: 'john@example.com', date: '2024-09-09' },
-        { name: 'Jane Roe', email: 'jane@example.com', date: '2024-09-08' },
-        { name: 'Richard Roe', email: 'richard@example.com', date: '2024-09-07' }
+        { proformaInvoiceNum: '22W-012', broker: 'ZEC IMPORT AND EXPORT', importMerchant: 'QUALITY GEAR INC.', shippingMethod: 'By Sea', paymentMethod: 'CIF', date: '2024-09-09' },
+        { proformaInvoiceNum: '22W-013', broker: 'ZEC IMPORT AND EXPORT', importMerchant: 'QUALITY GEAR INC.',shippingMethod: 'By Sea', paymentMethod: 'CIF', date: '2024-09-08' },
+        { proformaInvoiceNum: '22W-014', broker: 'ZEC IMPORT AND EXPORT', importMerchant: 'QUALITY GEAR INC.',shippingMethod: 'By Sea', paymentMethod: 'CIF', date: '2024-09-07' }
       ]
       ,
       rules: {
-        customerName: [
-          { required: true, message: 'Please input the customer name', trigger: 'blur' }
+        proformaInvoiceNum: [
+          { required: true, message: 'Please input the proformaInvoiceNum', trigger: 'blur' }
+        ],
+        startDate: [
+          { required: true, message: 'Please input the startDate', trigger: 'blur' }
+        ],
+        endDate: [
+          { required: true, message: 'Please input the endDate', trigger: 'blur' }
         ],
         product: [
           { required: true, message: 'Please select a product', trigger: 'change' }
@@ -161,8 +191,8 @@ h2 {
 
 /* Style for form and table */
 .el-form {
-  max-width: 500px;
-  margin: 0 auto;
+  max-width: 600px;
+  margin: 7 auto;
 }
 
 .el-table {
