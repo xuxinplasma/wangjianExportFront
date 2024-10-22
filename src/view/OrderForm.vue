@@ -16,46 +16,16 @@
        <el-main>
         <!-- Form Section -->
         <el-form ref="orderForm" :model="orderForm" label-width="200px" style="margin-bottom: 20px;">
-          <el-form-item label="ProformaInvoiceNum" prop="proformaInvoiceNum">
-            <el-input v-model="orderForm.proformaInvoiceNum" placeholder="Enter your ProformaInvoiceNum" style="text-align: left;"></el-input>
-          </el-form-item>
-          <el-row :gutter="20">
-            <el-col :span="12">
-              <el-form-item label="StartDate" prop="startDate" style="text-align: left;">
-                <el-date-picker 
-                v-model="orderForm.startDate" 
-                type="date" 
-                placeholder="Select Start Date" 
-                style="width: 100%;">
-              </el-date-picker>
-              </el-form-item>
-            </el-col>
-            
-            <el-col :span="12">
-              <el-form-item label="EndDate" prop="endDate" style="text-align: left;">
-                <el-date-picker 
-                v-model="orderForm.startDate" 
-                type="date" 
-                placeholder="Select Start Date" 
-                style="width: 100%;">
-              </el-date-picker>
-              </el-form-item>
-            </el-col>
-        </el-row>
+
+         
            <el-form-item label="Product" prop="product" style="text-align: left;">
             <el-select v-model="orderForm.product" placeholder="Select a product" >
-              <el-option label="Product A" value="productA"></el-option>
-              <el-option label="Product B" value="productB"></el-option>
-              <el-option label="Product C" value="productC"></el-option>
+              <el-option label="43129-4571" value="43129-4571"></el-option>
+              <el-option label="43129-4632" value="43129-4632"></el-option>
+              <el-option label="CENTER BEARING FROM B-0415" value="CENTER BEARING FROM B-0415"></el-option>
             </el-select>
           </el-form-item>
-         <el-form-item label="Quantity" prop="quantity" style="text-align: left;">
-            <el-input-number v-model="orderForm.quantity" :min="1"></el-input-number>
-          </el-form-item>
-          
-          <el-form-item label="Address" prop="address" style="text-align: left;">
-            <el-input v-model="orderForm.address" type="textarea" placeholder="Enter your address"></el-input>
-          </el-form-item>
+
           
           <el-form-item>
             <el-button type="primary" @click="submitOrder('orderForm')">Submit Orders</el-button>
@@ -66,11 +36,15 @@
         <!-- Table Section -->
         <el-table :data="tableData" style="width: 100%;">
           <el-table-column prop="proformaInvoiceNum" label="proformaInvoiceNum" width="100"></el-table-column>
-          <el-table-column prop="shippingMethod" label="shippingMethod"></el-table-column>
-          <el-table-column prop="paymentMethod" label="paymentMethod"></el-table-column>
-          <el-table-column prop="importMerchant" label="importMerchant"></el-table-column>
-          <el-table-column prop="broker" label="出口代理商"></el-table-column>
-          <el-table-column prop="date" label="Date" width="180"></el-table-column>
+          <el-table-column prop="factoryOrderNumber" label="factoryOrderNumber"></el-table-column>
+          <el-table-column prop="productModel" label="productModel"></el-table-column>
+          <el-table-column prop="unitPriceRMB" label="unitPriceRMB"></el-table-column>
+          <el-table-column prop="amountRMB" label="amountRMB"></el-table-column>
+          <el-table-column prop="factoryQuantity" label="factoryQuantity"></el-table-column>
+          <el-table-column prop="unitPriceUSD" label="unitPriceUSD"></el-table-column>
+          <el-table-column prop="amountUSD" label="amountUSD"></el-table-column>
+          <el-table-column prop="invoiceQuantity" label="invoiceQuantity" ></el-table-column>
+          <el-table-column prop="proformaInvoiceDate" label="proformaInvoiceDate" ></el-table-column>
         </el-table>
       </el-main>
       <!-- Body Content -->
@@ -87,25 +61,20 @@
 
 <script>
 
-import axiosAPI from 'axios'
+import axiosAPI from 'axios'      
 export default {
   name: 'OrderForm',
   data() {
     return {
       orderForm: {
-        proformaInvoiceNum: '',
+        proformaInvoiceNum: '123',
         startDate: '',
         endDate: '',
-        product: '',
+        product: 'test',
         quantity: 1,
         address: '',
       },
-      tableData: [
-        { proformaInvoiceNum: '22W-012', broker: 'ZEC IMPORT AND EXPORT', importMerchant: 'QUALITY GEAR INC.', shippingMethod: 'By Sea', paymentMethod: 'CIF', date: '2024-09-09' },
-        { proformaInvoiceNum: '22W-013', broker: 'ZEC IMPORT AND EXPORT', importMerchant: 'QUALITY GEAR INC.',shippingMethod: 'By Sea', paymentMethod: 'CIF', date: '2024-09-08' },
-        { proformaInvoiceNum: '22W-014', broker: 'ZEC IMPORT AND EXPORT', importMerchant: 'QUALITY GEAR INC.',shippingMethod: 'By Sea', paymentMethod: 'CIF', date: '2024-09-07' }
-      ]
-      ,
+      tableData: [],
       rules: {
         proformaInvoiceNum: [
           { required: true, message: 'Please input the proformaInvoiceNum', trigger: 'blur' }
@@ -130,10 +99,23 @@ export default {
     };
   },
   methods: {
+
+    fetchProductList() {
+      console.log('fetchProductList ' );
+      axios
+        .get('http://localhost:8092/proformalInvoice/findProductModels') // Adjust the endpoint to match your server's API
+        .then((response) => {
+          this.productList = response.data; // Assuming the response returns a list of products
+        })
+        .catch((error) => {
+          console.error('Error fetching product list:', error);
+        });
+    },
+
     submitOrder(formName) {
-      let searchData = {
-          
-        }
+
+      console.log('submitOrder ' );
+       console.log('productModel in form ' + this.orderForm.product);
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.$message({
@@ -144,11 +126,24 @@ export default {
           console.log('Order submission failed!');
           return false;
         }
-
-        axiosAPI.get('http://localhost:8092/proformalInvoice',searchData)
+ 
+        let productModel = this.orderForm.product;
+        console.log('productModel ' + productModel);
+        axiosAPI.get(`http://localhost:8092/proformalInvoice/findProformaInvoiceByProductModel/${productModel}`)
                 .then(response => {
-                  const dataVal = response.data;
-                  console.log("dataval " + dataVal.merchantAddress);
+                  this.tableData = response.data;
+
+                  this.tableData.forEach(item => {
+                    console.log('Proforma Invoice Num:', item.proformaInvoiceNum);
+                    console.log('Product Model:', item.productModel);
+                    console.log('Unit Price USD:', item.unitPriceUsd);
+                    console.log('Amount USD:', item.amountUsd);
+                    console.log('Quantity:', item.quantity);
+                    console.log('Invoice Date:', item.proformaInvoiceDate);
+                    // Add more fields as necessary based on the structure of your DTO
+                  });
+                
+
                 }).catch( error => {
                   console.error(error)
                 });
