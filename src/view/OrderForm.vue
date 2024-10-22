@@ -18,11 +18,22 @@
         <el-form ref="orderForm" :model="orderForm" label-width="200px" style="margin-bottom: 20px;">
 
          
-           <el-form-item label="Product" prop="product" style="text-align: left;">
+           <!--<el-form-item label="Product" prop="product" style="text-align: left;">
             <el-select v-model="orderForm.product" placeholder="Select a product" >
               <el-option label="43129-4571" value="43129-4571"></el-option>
               <el-option label="43129-4632" value="43129-4632"></el-option>
               <el-option label="CENTER BEARING FROM B-0415" value="CENTER BEARING FROM B-0415"></el-option>
+            </el-select>
+          </el-form-item>-->
+
+          <el-form-item label="Product" prop="product" style="text-align: left;">
+            <el-select v-model="orderForm.product" placeholder="Select a product">
+              <el-option 
+                v-for="(product, index) in products" 
+                :key="index" 
+                :label="product" 
+                :value="product">
+              </el-option>
             </el-select>
           </el-form-item>
 
@@ -74,6 +85,8 @@ export default {
         quantity: 1,
         address: '',
       },
+
+      products: [], // Holds the product data from the API
       tableData: [],
       rules: {
         proformaInvoiceNum: [
@@ -98,14 +111,21 @@ export default {
       }
     };
   },
+
+  mounted() {
+    this.fetchProductList(); // Fetch products when the component is mounted
+  },
   methods: {
 
     fetchProductList() {
       console.log('fetchProductList ' );
-      axios
+      axiosAPI
         .get('http://localhost:8092/proformalInvoice/findProductModels') // Adjust the endpoint to match your server's API
         .then((response) => {
-          this.productList = response.data; // Assuming the response returns a list of products
+          this.products = response.data; // Assuming the response returns a list of products
+           this.products.forEach(item => {
+             console.log('product ', item);
+           })
         })
         .catch((error) => {
           console.error('Error fetching product list:', error);
